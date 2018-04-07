@@ -12,15 +12,21 @@ import java.io.File;
 /**
  * Created by minishtera on 3/28/18.
  */
-public class Signature {
+public class SignaturePowerMock {
+    public static final String url = "https://api.github.com/orgs/HelloFax/repos";
+
     public static void main(String[] args) throws Exception {
         sendSignature("Andy", "andy.hyderabad@mailinator.com", "nda.pdf");
     }
 
-    public static void sendSignature(String name, String emailAddress, String filePath) throws Exception{
-        String url = "https://api.github.com/orgs/HelloFax/repos";
+    public static String returnJSON() {
         RestTemplate restTemplate = new RestTemplate();
         String json = restTemplate.getForObject(url, String.class);
+        return json;
+    }
+
+    public static void sendSignature(String name, String emailAddress, String filePath) throws Exception{
+        String json = returnJSON();
 
         JsonParser jsonParser = new JsonParser();
         JsonArray array = jsonParser.parse(json).getAsJsonArray();
