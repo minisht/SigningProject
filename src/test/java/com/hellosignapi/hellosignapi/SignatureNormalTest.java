@@ -2,7 +2,9 @@ package com.hellosignapi.hellosignapi;
 
 import com.google.gson.JsonObject;
 import com.hellosign.sdk.HelloSignClient;
+import com.hellosign.sdk.resource.SignatureRequest;
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -21,9 +23,15 @@ public class SignatureNormalTest {
     @Mock
     RestTemplateUtil template;
 
-    HelloSignClient client = new HelloSignClient("somekey");
+    @Mock
+    HelloSignClient client;
+
+//    HelloSignClient client = new HelloSignClient("somekey");
 
     JsonObject jsonObject = new JsonObject();
+
+    @Mock
+    SignatureRequest signatureRequest;
 
     @Mock
     RestTemplate restTemp;
@@ -42,9 +50,9 @@ public class SignatureNormalTest {
         Mockito.when(template.getRestTemplate()).thenReturn(restTemp);
         Mockito.when(restTemp.getForObject(Mockito.anyString(), Mockito.any()))
                 .thenReturn(FileUtils.readFileToString(new File("src/test/resources/data.json")));
-        Mockito.doNothing().when(signatureNrml).signRequest(jsonObject, client, "abc", "abc@xyz.com", "asdf");
+        Mockito.when(client.sendSignatureRequest(Mockito.any(SignatureRequest.class))).thenReturn(signatureRequest);
         signatureNrml.sendSignature("abc", "abc@xyz.com", "asdf");
-
+        Assert.assertNotNull(jsonObject);
     }
 
 }
